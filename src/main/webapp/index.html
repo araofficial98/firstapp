@@ -1,22 +1,136 @@
 <!DOCTYPE html>
 
 <html>
+	<head>
 
-	<title>Dynamic Example</title>
+		<title>Calculator</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+		<link rel= "stylesheet" type="text/css" href="styles.css">
+	</head>
 
 	<body>
 
-		<form action="CalculatorServlet.do" method="get">
+		<div class="grid_knoppen">
+			<div class="resultaat">
+				<div class="vorigOpp"></div>
+				<div class="huidigOpp"></div>
+			</div>
+			<div id="knop1"><button id="btn" class="nummer">7</button></div>
+			<div id="knop2"><button id="btn" class="nummer">8</button></div>
+			<div id="knop3"><button id="btn" class="nummer">9</button></div>
+			<div id="knop4"><button id="btn" class="opp">/</button></div>
+			<div id="knop5"><button id="btn" class="nummer">4</button></div>
+			<div id="knop6"><button id="btn" class="nummer">5</button></div>
+			<div id="knop7"><button id="btn" class="nummer">6</button></div>
+			<div id="knop8"><button id="btn" class="opp">*</button></div>
+			<div id="knop9"><button id="btn" class="nummer">1</button></div>
+			<div id="knop10"><button id="btn" class="nummer">2</button></div>
+			<div id="knop11"><button id="btn" class="nummer">3</button></div>
+			<div id="knop12"><button id="btn" class="opp">-</button></div>
+			<div id="knop13"><button id="btn" class="clear">AC</button></div>
+			<div id="knop14"><button id="btn" class="nummer">0</button></div>
+			<div id="knop15"><button id="btn" class="equals">=</button></div>
+			<div id="knop16"><button id="btn" class="opp">+</button></div>
+		</div>
 
-			
-			Geef het eerste getal: <input type="text" name="getal1">
-			<br>Geef het tweede getal: <input type="text" name="getal2"><br><br><br>
-			<input type="submit" name="operator" value="plus"><br>
-			<input type="submit" name="operator" value="min"><br>
-			<input type="submit" name="operator" value="delen"><br>
-			<input type="submit" name="operator" value="keer"><br>
+		<script>
 
-		</form>
+			const getalknoppen = document.querySelectorAll(".nummer")
+			const opperatorknoppen = document.querySelectorAll(".opp")
+			const vorigOpprtxt = document.querySelector(".vorigOpp")
+			const huidigOpprtxt = document.querySelector(".huidigOpp")
+			const equalknop = document.querySelector(".equals")
+			const clearknop = document.querySelector(".clear")
+
+			class Rekenmachine {
+				constructor(vorigOpprtxt, huidigOpprtxt) {
+					this.huidigOpprtxt = huidigOpprtxt
+					this.vorigOpprtxt = vorigOpprtxt
+					this.clear()
+				}
+
+				clear() {
+					this.huidigOpp = ''
+					this.vorigOpp = ''
+					this.opperation = undefined
+				}
+
+				voegNummerToe(numm) {
+					if (numm )
+					this.huidigOpp = this.huidigOpp.toString() + numm.toString()
+				}
+
+				kiesOpp(opperation) {
+					if (this.huidigOpp === '') return
+					if (this.vorigOpp !== '') {
+						this.bereken()
+					}
+					this.opperation = opperation
+					this.vorigOpp = this.huidigOpp
+					this.huidigOpp = ''
+
+				}
+
+				bereken() {
+					let result 
+					const vorig = parseFloat(this.vorigOpp)
+					const huidig = parseFloat(this.huidigOpp)
+					if (isNaN(vorig) || isNaN(huidig)) return
+					switch (this.opperation) {
+						case '+': 
+							result = vorig + huidig
+							break
+						case '-': 
+							result = vorig - huidig
+							break
+						case '*': 
+							result = vorig * huidig
+							break	
+						case '/': 
+							result = vorig / huidig
+							break
+						default: 
+							return
+					}
+					this.huidigOpp = result
+					this.opperation = undefined
+					this.vorigOpp = ''
+				}
+
+				updateResultaat() {
+					this.huidigOpprtxt.innerText = this.huidigOpp
+					this.vorigOpprtxt.innerText = this.vorigOpp
+				}
+			}
+		
+			const rekmachine = new Rekenmachine(vorigOpprtxt, huidigOpprtxt) 
+
+			getalknoppen.forEach(button => {
+				button.addEventListener('click', () => {
+					rekmachine.voegNummerToe(button.innerText)
+					rekmachine.updateResultaat()
+				})
+			});
+
+			opperatorknoppen.forEach(button => {
+				button.addEventListener('click', () => {
+					rekmachine.kiesOpp(button.innerText)
+					rekmachine.updateResultaat()
+				})
+			});
+
+			equalknop.addEventListener('click', button => {
+				rekmachine.bereken()
+				rekmachine.updateResultaat()
+			});
+				
+			clearknop.addEventListener('click', button => {
+				rekmachine.clear()
+				rekmachine.updateResultaat()
+			});
+
+		</script>
 
 	</body>
 
